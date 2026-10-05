@@ -1,0 +1,69 @@
+project:
+  name: product-review-controlled-tone-summarizer
+  model_name: google/flan-t5-base
+
+data:
+  dataset_name: amazon_reviews_multi
+  dataset_config: en
+  text_column: review_body
+  # Stored for inspection only; a review title is not a gold summary.
+  reference_column: review_title
+  rating_column: stars
+
+phase1:
+  tone_labels: [neutral, friendly, formal]
+  max_samples: 10
+  max_input_tokens: 512
+  max_new_tokens: 96
+  output_path: results/phase1_outputs.csv
+  max_samples: 10
+  max_input_tokens: 512
+  max_new_tokens: 96
+  output_path: results/phase1_outputs.csv
+
+training:
+  seed: 42
+
+phase2:
+  peft_method: lora
+  train_file: data/annotations/sft_train.csv
+  eval_file: data/annotations/sft_eval.csv
+  output_dir: results/phase2_lora
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules: [q, v]
+  num_train_epochs: 3
+  learning_rate: 0.0002
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  # T5 + PEFT on this environment is more stable with checkpointing off.
+  gradient_checkpointing: false
+  remove_unused_columns: false
+  max_input_tokens: 512
+  max_target_tokens: 128
+  logging_steps: 5
+
+phase3:
+  algorithm: ppo
+  preference_file: data/annotations/preferences.csv
+  reward_model_dir: results/phase3_reward
+  policy_adapter_dir: results/phase2_lora
+  output_dir: results/phase3_ppo
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  target_modules: [q, v]
+  reward_num_train_epochs: 3
+  reward_learning_rate: 0.00005
+  reward_batch_size: 1
+  reward_gradient_accumulation_steps: 8
+  reward_max_length: 640
+  ppo_learning_rate: 0.00001
+  ppo_num_epochs: 10
+  ppo_epochs: 1
+  ppo_max_steps: 20
+  ppo_max_new_tokens: 96
+  ppo_max_input_tokens: 512
+  kl_coefficient: 0.1

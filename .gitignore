@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments and local environment variables
+.venv/
+venv/
+env/
+.env
+
+# Datasets, Hugging Face caches, model weights, and checkpoints
+.cache/
+cache/
+datasets/
+**/datasets/
+models/
+**/models/
+checkpoints/
+**/checkpoints/
+**/checkpoint-*/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.h5
+
+# Keep annotation templates, but never commit collected annotations or raw data
+data/*
+!data/README.md
+!data/templates/
+data/templates/*
+!data/templates/*.csv
+!data/annotations/
+data/annotations/*
+!data/annotations/.gitkeep
+
+# Keep results directory but ignore generated content
+results/**
+!results/.gitkeep
+
+# Notebook/editor and OS files
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
+Thumbs.db

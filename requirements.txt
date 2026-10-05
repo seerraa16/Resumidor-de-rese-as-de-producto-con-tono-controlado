@@ -1,0 +1,13 @@
+# Install PyTorch separately using the CUDA command selected at pytorch.org.
+transformers==4.45.2
+datasets==3.6.0
+peft==0.13.2
+trl==0.11.4
+accelerate==1.15.0
+evaluate==0.4.6
+rouge_score==0.1.2
+numpy==1.26.4
+PyYAML==6.0.1
+rich==15.0.0
+tensorboard==2.21.0
+ipykernel==7.4.0
